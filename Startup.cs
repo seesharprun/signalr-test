@@ -24,6 +24,16 @@ namespace signalr
         {
             services.AddMvc();
 
+            services.AddCors(o =>
+            {
+                o.AddPolicy("Everything", p =>
+                {
+                    p.AllowAnyHeader()
+                     .AllowAnyMethod()
+                     .AllowAnyOrigin();
+                });
+            });
+
             services.AddSignalR();
         }
 
@@ -41,9 +51,11 @@ namespace signalr
 
             app.UseStaticFiles();
             
+            app.UseCors("Everything");
+
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("chat");
+                routes.MapHub<ChatHub>("/chat");
             });
 
             app.UseMvc(routes =>
